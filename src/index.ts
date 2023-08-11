@@ -2,7 +2,7 @@ import type { IoCResources, User } from './types';
 import { createIoCContainer } from './ioc';
 import IoCContainer from 'ioc-lite';
 
-let ioc: IoCContainer<IoCResources>;
+let ioc: IoCContainer<IoCResources> = createIoCContainer();
 
 const renderUsers = async () => {
   // Resolve resources
@@ -30,7 +30,6 @@ const app = () => {
 };
 
 window.onload = () => {
-  ioc = createIoCContainer();
   const logger = ioc.resolve('logger');
 
   logger.info('Page is loaded.');
