@@ -1,12 +1,12 @@
-import { Users } from './services/users';
-import { Logger } from './services/logger';
-
-import type { User } from './types';
+import type { IoCResources, User } from './types';
 import { createIoCContainer } from './ioc';
+import IoCContainer from 'ioc-lite';
+
+let ioc: IoCContainer<IoCResources>;
 
 const renderUsers = async () => {
   // Resolve resources
-  const usersService = createIoCContainer().resolve('users');
+  const usersService = ioc.resolve('users');
 
   const users = await usersService.getUsers();
 
@@ -20,16 +20,18 @@ const renderUsers = async () => {
   });
 };
 
-export const config = (window as any).__CONFIG__;
-
 const app = () => {
+  const config = (window as any).__CONFIG__;
   delete (window as any).__CONFIG__;
+
+  ioc.register('apiConfig', config.api);
 
   renderUsers();
 };
 
 window.onload = () => {
-  const logger = createIoCContainer().resolve('logger');
+  ioc = createIoCContainer();
+  const logger = ioc.resolve('logger');
 
   logger.info('Page is loaded.');
 
